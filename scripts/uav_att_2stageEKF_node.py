@@ -150,10 +150,17 @@ while not rospy.is_shutdown():
             mag[2] = mag_msg.vector.z
             mag /= np.linalg.norm(mag)
 
-            MAG = mag+Acc
-            MAG /= np.linalg.norm(MAG)
+            mag_z = sum(mag*Acc)[0]
+            magz = mag_z*Acc
 
-            uav_att.correct_by_mag(MAG, t)
+            magxy = mag-magz
+            magE = magxy / np.linalg.norm(magxy)
+
+
+            # MAG = mag+Acc
+            # MAG /= np.linalg.norm(MAG)
+
+            uav_att.correct_by_mag(magE, t)
 
             att_pose = get_att_pose()
             pose_pub.publish(att_pose)
